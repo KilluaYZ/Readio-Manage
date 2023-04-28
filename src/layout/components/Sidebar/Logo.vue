@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      title: 'MOOC知识点标签管理系统',
+      title: 'Readio后台管理系统',
       logo: logoImg
     }
   }

@@ -1,8 +1,8 @@
 {
-  "name": "ruoyi",
-  "version": "3.8.4",
-  "description": "MOOC知识点标签管理系统",
-  "author": "若依",
+  "name": "readio",
+  "version": "1.0.0",
+  "description": "Readio后台管理系统",
+  "author": "readio",
   "license": "MIT",
   "scripts": {
     "dev": "SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",

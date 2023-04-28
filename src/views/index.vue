@@ -2,8 +2,8 @@
   <div class="app-container home">
     <el-row :gutter="20">
       <el-col :xs="24" :sm="24" :md="12" :lg="12" style="padding-left: 20px">
-        <h2>知识点标签管理系统</h2>
-        <p>迄今为止，中国大学MOOC平台上人大的数据库系统概论课程，自2016年起已经开课了13次，在课程讨论区的老师答疑区留下了学习者很多的提问问题。现已根据这些提问的问题，通过对其打上知识点标签形式，对问题分类，挖掘出高频疑难知识点和学生的关注点，用以对后续教学的指导参考。</p>
+        <h2>Readio后台管理系统</h2>
+        <p>Readio的后台管理系统~</p>
         <p style="padding-bottom: 50px;">
           <b>当前版本:</b><span>v{{ version }}</span>
         </p>
