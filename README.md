@@ -8,16 +8,16 @@
 
 ```bash
 # 安装npm node gitbash
-node版本最好选15
+node版本随意，不要太低就好
 
 # 安装vue脚手架
 npm install -g @vue/cli
 
 # 克隆项目
-git clone https://gitee.com/killuayz/meta_info_system_frontend.git
+git clone git@codehub.devcloud.cn-north-4.huaweicloud.com:Reader00001/Readio-Management-Plantform.git
 
 # 进入项目目录
-cd meta_info_system/frontend
+cd Readio-Management-Plantform
 
 # 安装依赖
 npm install --force
