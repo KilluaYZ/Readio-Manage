@@ -4,7 +4,7 @@ import { useMock } from '../settings'
 // 获取路由
 export const getRouters = () => {
   return request({
-    url: 'auth/getRouters',
+    url: 'app/auth/getRouters',
     method: 'get'
   })
 

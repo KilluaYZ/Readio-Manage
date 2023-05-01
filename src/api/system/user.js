@@ -51,10 +51,10 @@ export function delUser(userId) {
 }
 
 // 用户密码重置
-export function resetUserPwd(userId, password) {
+export function resetUserPwd(userId, passWord) {
   const data = {
-    userId,
-    password
+    "userId":userId,
+    "passWord":passWord
   }
   return request({
     url: '/user/resetPwd',
@@ -79,7 +79,7 @@ export function changeUserStatus(userId, status) {
 // 查询用户个人信息
 export function getUserProfile() {
   return request({
-    url: '/auth/profile',
+    url: '/app/auth/profile',
     method: 'get'
   })
 }
@@ -87,7 +87,7 @@ export function getUserProfile() {
 // 修改用户个人信息
 export function updateUserProfile(data) {
   return request({
-    url: '/auth/profile',
+    url: '/app/auth/profile',
     method: 'post',
     data: data
   })
@@ -100,7 +100,7 @@ export function updateUserPwd(oldPassword, newPassword) {
     newPassword
   }
   return request({
-    url: '/auth/profile/updatePwd',
+    url: '/app/auth/profile/updatePwd',
     method: 'post',
     data: data
   })

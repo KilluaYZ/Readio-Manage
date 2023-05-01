@@ -2,14 +2,14 @@
   <div class="login">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
       <h3 class="title">Readio后台管理系统</h3>
-      <el-form-item prop="username">
-        <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
+      <el-form-item prop="phoneNumber">
+        <el-input v-model="loginForm.phoneNumber" type="text" auto-complete="off" placeholder="手机">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
-      <el-form-item prop="password">
+      <el-form-item prop="passWord">
         <el-input
-          v-model="loginForm.password"
+          v-model="loginForm.passWord"
           type="password"
           auto-complete="off"
           placeholder="密码"
@@ -67,17 +67,17 @@ export default {
     return {
       codeUrl: "",
       loginForm: {
-        username: "admin",
-        password: "admin123",
+        phoneNumber: "18314266702",
+        passWord: "123456",
         rememberMe: false,
         code: "",
         uuid: ""
       },
       loginRules: {
-        username: [
+        phoneNumber: [
           { required: true, trigger: "blur", message: "请输入您的账号" }
         ],
-        password: [
+        passWord: [
           { required: true, trigger: "blur", message: "请输入您的密码" }
         ],
         code: [{ required: true, trigger: "change", message: "请输入验证码" }]
@@ -114,13 +114,12 @@ export default {
       });
     },
     getCookie() {
-      const username = Cookies.get("username");
-      const password = Cookies.get("password");
+      const phoneNumber = Cookies.get("phoneNumber");
+      const passWord = Cookies.get("passWord");
       const rememberMe = Cookies.get("rememberMe");
       this.loginForm = {
-        username: username === undefined ? this.loginForm.username : username,
-        password:
-          password === undefined ? this.loginForm.password : decrypt(password),
+        phoneNumber: phoneNumber === undefined ? this.loginForm.phoneNumber : phoneNumber,
+        passWord:passWord === undefined ? this.loginForm.passWord : decrypt(passWord),
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
       };
     },
@@ -131,16 +130,16 @@ export default {
           //校验成功，开始进行下一步操作
           this.loading = true;
           if (this.loginForm.rememberMe) {
-            Cookies.set("username", this.loginForm.username, { expires: 30 });
-            Cookies.set("password", encrypt(this.loginForm.password), {
+            Cookies.set("phoneNumber", this.loginForm.phoneNumber, { expires: 30 });
+            Cookies.set("passWord", encrypt(this.loginForm.passWord), {
               expires: 30
             });
             Cookies.set("rememberMe", this.loginForm.rememberMe, {
               expires: 30
             });
           } else {
-            Cookies.remove("username");
-            Cookies.remove("password");
+            Cookies.remove("phoneNumber");
+            Cookies.remove("passWord");
             Cookies.remove("rememberMe");
           }
           //调用store/user.js里的Login方法

@@ -1,10 +1,10 @@
 <template>
   <el-form ref="form" :model="user" :rules="rules" label-width="80px">
-    <el-form-item label="用户昵称" prop="nickName">
-      <el-input v-model="user.nickName" maxlength="30" />
+    <el-form-item label="用户名" prop="userName">
+      <el-input v-model="user.userName" maxlength="30" />
     </el-form-item> 
-    <el-form-item label="手机号码" prop="phonenumber">
-      <el-input v-model="user.phonenumber" maxlength="11" />
+    <el-form-item label="手机号码" prop="phoneNumber">
+      <el-input v-model="user.phoneNumber" maxlength="11"  readonly="readonly"/>
     </el-form-item>
     <el-form-item label="邮箱" prop="email">
       <el-input v-model="user.email" maxlength="50" />
@@ -39,13 +39,13 @@ export default {
             trigger: ["blur", "change"]
           }
         ],
-        phonenumber: [
-          {
-            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: "请输入正确的手机号码",
-            trigger: "blur"
-          }
-        ]
+        // phonenumber: [
+        //   {
+        //     pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+        //     message: "请输入正确的手机号码",
+        //     trigger: "blur"
+        //   }
+        // ]
       }
     };
   },
