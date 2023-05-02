@@ -2,14 +2,14 @@
   <div class="register">
     <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="register-form">
       <h3 class="title">Readio后台管理系统</h3>
-      <el-form-item prop="username">
-        <el-input v-model="registerForm.username" type="text" auto-complete="off" placeholder="账号">
+      <el-form-item prop="phoneNumber">
+        <el-input v-model="registerForm.phoneNumber" type="text" auto-complete="off" placeholder="手机号">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
-      <el-form-item prop="password">
+      <el-form-item prop="passWord">
         <el-input
-          v-model="registerForm.password"
+          v-model="registerForm.passWord"
           type="password"
           auto-complete="off"
           placeholder="密码"
@@ -73,7 +73,7 @@ export default {
   name: "Register",
   data() {
     const equalToPassword = (rule, value, callback) => {
-      if (this.registerForm.password !== value) {
+      if (this.registerForm.passWord !== value) {
         callback(new Error("两次输入的密码不一致"));
       } else {
         callback();
@@ -83,7 +83,7 @@ export default {
       codeUrl: "",
       registerForm: {
         username: "",
-        password: "",
+        passWord: "",
         confirmPassword: "",
         code: "",
         uuid: ""
@@ -93,7 +93,15 @@ export default {
           { required: true, trigger: "blur", message: "请输入您的账号" },
           { min: 2, max: 20, message: '用户账号长度必须介于 2 和 20 之间', trigger: 'blur' }
         ],
-        password: [
+        phoneNumber: [
+          {required: true,message: "手机号码不能为空", trigger: "blur"},
+          {
+            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+            message: "请输入正确的手机号码",
+            trigger: "blur"
+          }
+        ],
+        passWord: [
           { required: true, trigger: "blur", message: "请输入您的密码" },
           { min: 5, max: 20, message: '用户密码长度必须介于 5 和 20 之间', trigger: 'blur' }
         ],

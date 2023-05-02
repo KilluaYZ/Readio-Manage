@@ -9,7 +9,7 @@
         </p>
       </el-col>
 
-      <!-- <el-col :xs="24" :sm="24" :md="12" :lg="4">
+      <el-col :xs="24" :sm="24" :md="12" :lg="4">
         <el-card class="info">
           <div>
             最近访问<i class="el-icon-timer"></i>
@@ -40,7 +40,7 @@
             <span><i class="el-icon-caret-right"></i>{{ notice }}</span>
           </div>
         </el-card>
-      </el-col> -->
+      </el-col>
 
     </el-row>
 
@@ -260,8 +260,8 @@ export default {
     };
   },
   created() {
-    console.log("获取数据");
-    this.getList();
+    // console.log("获取数据");
+    // this.getList();
   },
   methods: {
     goTarget(href) {

@@ -60,7 +60,7 @@ export function getInfo() {
 export function logout() {
   return request({
     url: 'app/auth/logout',
-    method: 'post'
+    method: 'get'
   })
 }
 

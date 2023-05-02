@@ -155,7 +155,7 @@ export const dynamicRoutes = [
     component: Layout,
     hidden: true,
     redirect: 'noredirect',
-    roles:['common','tagger'],
+    roles:['common','manager'],
     children: [
       {
         path: 'profile',
@@ -170,7 +170,7 @@ export const dynamicRoutes = [
     component: Layout,
     hidden:true,
     redirect:'noredirect',
-    roles:['tagger'],
+    roles:['manager'],
     children:[
       {
         path:'tag',
@@ -185,7 +185,7 @@ export const dynamicRoutes = [
     component: Layout,
     hidden:true,
     redirect:'noredirect',
-    roles:['tagger'],
+    roles:['manager'],
     children:[
       {
         path:'post',
@@ -200,7 +200,37 @@ export const dynamicRoutes = [
     component: Layout,
     hidden:true,
     redirect:'noredirect',
-    roles:['common','tagger'],
+    roles:['manager'],
+    children:[
+      {
+        path:'file',
+        component: () => import('@/views/manage/file/index'),
+        name: "File",
+        meta:{title:'文件管理', icon: 'user'}
+      }
+    ]
+  },
+  {
+    path:'/system',
+    component: Layout,
+    hidden:true,
+    redirect:'noredirect',
+    roles:['manager'],
+    children:[
+      {
+        path:'series',
+        component: () => import('@/views/manage/series/index'),
+        name: "Series",
+        meta:{title:'系列管理', icon: 'user'}
+      }
+    ]
+  },
+  {
+    path:'/system',
+    component: Layout,
+    hidden:true,
+    redirect:'noredirect',
+    roles:['common','manager'],
     children:[
       {
         path:'visualization',

@@ -5,8 +5,8 @@ import { parseStrEmpty } from "@/utils/ruoyi";
 export function listUser(query) {
   return request({
     url: '/user/list',
-    method: 'post',
-    data: query
+    method: 'get',
+    params: query
   })
 }
 
