@@ -115,6 +115,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="所属用户" align="center" prop="user.userName" width="150" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <span>{{ scope.row.user.userName }}</span>
+        </template>
+      </el-table-column>
+
       <!-- <el-table-column
         label="热度"
         align="center"
@@ -633,15 +639,6 @@ export default {
       this.$modal
         .confirm('是否确认删除ID为"' + seriesIdList.toString() + '"的数据项？')
         .then(() => {
-          // return delPost(postID);
-          // seriesIdList.forEach((item, index) => {
-          //   delSeries({ seriesId: item }).then(() => {
-          //     this.$modal.msgSuccess("删除" + item + "成功");
-          //   }).catch(() => {
-          //     this.$modal.msgError('删除' + item + '失败');
-          //   })
-          // })
-          // console.log('完成删除then');
 
           delSeries({seriesIdList: seriesIdList}).then(() => {
             this.$modal.msgSuccess("删除成功");

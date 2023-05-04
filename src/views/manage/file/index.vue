@@ -1,84 +1,40 @@
 <template>
   <div class="app-container">
-    <el-form
-      :model="queryParams"
-      ref="queryForm"
-      size="small"
-      :inline="true"
-      v-show="showSearch"
-      label-width="68px"
-    >
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="文件名称" prop="fileName">
-        <el-input
-          v-model="queryParams.fileName"
-          placeholder="请输入文件名称"
-          clearable
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryParams.fileName" placeholder="请输入文件名称" clearable style="width: 240px"
+          @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="类别" prop="fileType">
-        <el-select
-          v-model="queryParams.fileType"
-          placeholder="文件类别"
-          clearable
-          style="width: 240px;padding-right: 25px;"
-        >
+        <el-select v-model="queryParams.fileType" placeholder="文件类别" clearable style="width: 240px;padding-right: 25px;">
           <!-- <el-option label="1" value="1">1</el-option>
           <el-option label="2" value="2">2</el-option>
           <el-option label="3" value="3">3</el-option> -->
         </el-select>
       </el-form-item>
-      
-      
+
+
 
       <el-form-item label="排序方式" prop="sortMode">
-        <el-select
-          v-model="queryParams.sortMode"
-          placeholder="按序号排序"
-          clearable
-          style="width: 240px;"
-        >
+        <el-select v-model="queryParams.sortMode" placeholder="按序号排序" clearable style="width: 240px;">
           <el-option label="新的在前" value="New"></el-option>
           <el-option label="旧的在前" value="Old"></el-option>
         </el-select>
       </el-form-item>
-      
+
       <el-form-item>
-        <el-button
-          type="primary"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
-          >搜索</el-button
-        >
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-          >重置</el-button
-        >
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          >新增</el-button
-        >
+        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          >删除</el-button
-        >
+        <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple"
+          @click="handleDelete">删除</el-button>
       </el-col>
       <!-- <el-col :span="1.5">
         <el-button
@@ -91,38 +47,34 @@
         >
       </el-col> -->
       <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-refresh"
-          size="mini"
-          @click="handleRefreshCache"
-          >刷新缓存</el-button
-        >
+        <el-button type="danger" plain icon="el-icon-refresh" size="mini" @click="handleRefreshCache">刷新缓存</el-button>
       </el-col>
-      <right-toolbar
-        :showSearch.sync="showSearch"
-        @queryTable="getList"
-      ></right-toolbar>
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table
-      v-loading="loading"
-      :data="fileList"
-      @selection-change="handleSelectionChange"
-    >
+    <el-table v-loading="loading" :data="fileList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column
-        label="名称"
-        align="center"
-        prop="fileName"
-        :show-overflow-tooltip="true"
-      >
+
+      <el-table-column label="预览" align="center" prop="imgUrl" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <el-button  type="text" @click="showDetials({data:scope.row,row:'selftag'})">
+          <!-- <el-button  type="text" @click="showDetials(scope.row)">
+            <span>{{ scope.row.fileName }}</span>
+          </el-button> -->
+          <!-- <span>{{ scope.row }}</span> -->
+          <el-image v-if="scope.row.imgUrl" style="width: 100px; 
+          height: 100px" :src="scope.row.imgUrl" fit="cover"
+          :preview-src-list="[scope.row.imgUrl]">
+          </el-image>
+
+        </template>
+      </el-table-column>
+
+      <el-table-column label="名称" align="center" prop="fileName" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <el-button type="text" @click="showDetials(scope.row)">
             <span>{{ scope.row.fileName }}</span>
           </el-button>
-        </template>      
+        </template>
       </el-table-column>
       <!-- <el-table-column
         label="父标签"
@@ -156,84 +108,42 @@
         prop="remark"
         :show-overflow-tooltip="true"
       /> -->
-      <el-table-column
-        label="操作"
-        align="center"
-        class-name="small-padding fixed-width"
-      >
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            >修改</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            style="color: crimson;"
-            @click="handleDelete(scope.row)"
-            >删除</el-button
-          >
+          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-delete" style="color: crimson;"
+            @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
+      @pagination="getList" />
 
     <!-- 添加或修改参数配置对话框 -->
-    <el-dialog
-      :title="title"
-      :visible.sync="config_open"
-      width="500px"
-      append-to-body
-    >
+    <el-dialog :title="title" :visible.sync="config_open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="标签名" prop="tagName">
           <el-input v-model="form.tagName" placeholder="请输入标签名称" />
         </el-form-item>
         <el-form-item label="父标签名" prop="tagParentName">
           <!-- <el-input v-model="form.tagParentName" placeholder="请输入父标签名称" /> -->
-          <el-select
-            v-model="form.tagParentName"
-            filterable
-            placeholder="父标签名"
-            :disabled="configPageParentTagDisabled"
-          >
-            <el-option
-              v-for="item in configPageParentTags"
-              :key="item.tagName"
-              :value="item.tagName"
-            >
+          <el-select v-model="form.tagParentName" filterable placeholder="父标签名" :disabled="configPageParentTagDisabled">
+            <el-option v-for="item in configPageParentTags" :key="item.tagName" :value="item.tagName">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="标签级别" prop="tagClass" v-if="!form.tagID">
-          <el-radio-group
-            v-model="form.tagClass"
-            size="small"
-            @change="handleConfigPageParentTagNameSelectChanged(form.tagClass)"
-          >
+          <el-radio-group v-model="form.tagClass" size="small"
+            @change="handleConfigPageParentTagNameSelectChanged(form.tagClass)">
             <el-radio-button label="1" value="1">级别1</el-radio-button>
             <el-radio-button label="2" value="2">级别2</el-radio-button>
             <el-radio-button label="3" value="3">级别3</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input
-            v-model="form.remark"
-            type="textarea"
-            placeholder="请输入内容"
-            :autosize="{ minRows: 5, maxRows: 15 }"
-          ></el-input>
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"
+            :autosize="{ minRows: 5, maxRows: 15 }"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -243,12 +153,7 @@
     </el-dialog>
 
     <!-- 显示详情对话框 -->
-    <el-dialog
-      :title="title"
-      :visible.sync="detail_open"
-      width="500px"
-      append-to-body
-    >
+    <el-dialog :title="title" :visible.sync="detail_open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="标签名称" prop="tagName">
           <el-input v-model="form.tagName" readonly />
@@ -263,12 +168,7 @@
           <el-input v-model="form.createTime" readonly />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input
-            v-model="form.remark"
-            type="textarea"
-            readonly
-            :autosize="{ minRows: 5, maxRows: 15 }"
-          ></el-input>
+          <el-input v-model="form.remark" type="textarea" readonly :autosize="{ minRows: 5, maxRows: 15 }"></el-input>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -285,7 +185,7 @@
 //   refreshCache,
 // } from "@/api/system/dict/type";
 
-import { getFileInfo } from "@/api/manage/file.js";
+import { getFileInfo, getFileBinaryById, getImgUrl } from "@/api/manage/file.js";
 
 export default {
   name: "Tag",
@@ -335,19 +235,24 @@ export default {
       },
       configPageParentTags: [],
       configPageParentTagDisabled: false,
+      imgTypeList: ["jpg", "jpeg", "png", "svg", "gif"],
+      downloadingUrl: process.env.VUE_APP_BASE_API + "/file/getFileBinaryById/",
+      fileList: [],
+      tableShow: true
     };
   },
   created() {
     console.log(sessionStorage.getItem("fileShowOrder"))
-    if(sessionStorage.getItem("fileShowOrder") === "ok"){
+    if (sessionStorage.getItem("fileShowOrder") === "ok") {
       console.log("使用初始化配置")
-      if(sessionStorage.getItem("fileShowOrderParam") === 'Old')
+      if (sessionStorage.getItem("fileShowOrderParam") === 'Old')
         this.queryParams.sortMode = "Old"
-      if(sessionStorage.getItem("fileShowOrderParam") === 'New')
+      if (sessionStorage.getItem("fileShowOrderParam") === 'New')
         this.queryParams.sortMode = "New"
     }
     console.log(this.queryParams.sortMode)
     this.getList();
+    console.log('继续往下走');
     //if(this.$store.state.tagneedRunPreset === true)
     //  console.log("使用配置")
     console.log(sessionStorage.getItem("tagneedRunPreset"))
@@ -355,7 +260,7 @@ export default {
   },
   methods: {
     /** 查询标签类型列表 */
-    getList() {
+    async getList() {
       this.loading = true;
       // listType(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
       //     this.typeList = response.rows;
@@ -363,14 +268,44 @@ export default {
       //     this.loading = false;
       //   }
       // );
-      getFileInfo(this.queryParams).then((res) => {
+      await getFileInfo(this.queryParams).then((res) => {
         console.log("成功取得getTag mock数据");
         this.fileList = res.data;
         this.total = res.length;
-        this.loading = false;
+        let promiseArray = []
+        for (let i = 0; i < this.fileList.length; ++i) {
+          if (this.imgTypeList.indexOf(this.fileList[i].fileType) > -1) {
+            promiseArray.push(
+              getFileBinaryById({ fileId: this.fileList[i].fileId }).then((res) => {
+                // const imgUrl = window.URL.createObjectURL(new window.Blob([res]), { type: 'image/' + this.fileList[i].fileType });
+                const imgUrl = window.URL.createObjectURL(new window.Blob([res]));
+                // this.fileList[i].imgUrl = imgUrl;
+                this.$set(this.fileList[i], 'imgUrl', imgUrl);
+                console.log("成功获取到了图片数据: " + i);
+                console.log(this.fileList[i].imgUrl);
+              }).catch((err) => {
+                console.log(err)
+                console.log("获取图片" + this.fileList[i].fileName + "失败");
+              })
+            );
+          }
+        }
+
+        console.log("promiseArray");
+        console.log(promiseArray);
+
+        return Promise.all(promiseArray).then(() => {
+          this.loading = false;
+          console.log('成功获取了promiseArray');
+          console.log(this.fileList);
+          // this.flushTable();
+        })
       });
     },
-
+    flushTable() {
+      this.tableShow = false;
+      this.tableShow = true;
+    },
     // 取消按钮
     cancel() {
       this.config_open = false;
@@ -426,16 +361,22 @@ export default {
       });
     },
     showDetials(param) {
-      this.reset();
-      const tagName = param.row === 'parent' ? param.data.tagParentName : param.data.tagName;
-      getTag({ tagName: tagName }).then((res) => {
-        console.log("点开详情页面，收到数据");
-        console.log(res);
-        this.form = res.data[0];
-        console.log(res.data[0])
-        this.detail_open = true;
-        this.title = "标签详情";
-      });
+      // this.reset();
+      // const tagName = param.row === 'parent' ? param.data.tagParentName : param.data.tagName;
+      // getTag({ tagName: tagName }).then((res) => {
+      //   console.log("点开详情页面，收到数据");
+      //   console.log(res);
+      //   this.form = res.data[0];
+      //   console.log(res.data[0])
+      //   this.detail_open = true;
+      //   this.title = "标签详情";
+      // });
+
+      let curFileId = param.fileId;
+      getFileBinaryById({ fileId: curFileId }).then((res) => {
+
+      })
+
     },
 
     /** 提交按钮 */
@@ -481,7 +422,7 @@ export default {
         .then(() => {
           this.getList();
         })
-        .catch(() => {});
+        .catch(() => { });
     },
     /** 导出按钮操作 */
     handleExport() {
