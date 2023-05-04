@@ -1,32 +1,15 @@
 <template>
   <div class="app-container">
-    <el-form
-      :model="queryParams"
-      ref="queryForm"
-      size="small"
-      :inline="true"
-      v-show="showSearch"
-      label-width="68px"
-    >
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="系列ID" prop="seriesId">
-        <el-input
-          v-model="queryParams.seriesId"
-          placeholder="请输入系列ID"
-          clearable
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryParams.seriesId" placeholder="请输入系列ID" clearable style="width: 240px"
+          @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="系列名" prop="seriesName">
-        <el-input
-          v-model="queryParams.seriesName"
-          placeholder="请输入系列名"
-          clearable
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryParams.seriesName" placeholder="请输入系列名" clearable style="width: 240px"
+          @keyup.enter.native="handleQuery" />
       </el-form-item>
-      
+
       <!-- <el-form-item label="关键词" prop="postKeywords">
         <el-input
           v-model="queryParams.postKeywords"
@@ -38,13 +21,8 @@
       </el-form-item> -->
 
       <el-form-item label="标签" prop="seriesTag">
-        <el-input
-          v-model="queryParams.seriesTag"
-          placeholder="请输入标签"
-          clearable
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryParams.seriesTag" placeholder="请输入标签" clearable style="width: 240px"
+          @keyup.enter.native="handleQuery" />
       </el-form-item>
 
       <!-- <el-form-item label="时间" prop="postTime">
@@ -61,51 +39,26 @@
       </el-form-item> -->
 
       <el-form-item label="排序方式" prop="sortMode">
-        <el-select
-          v-model="queryParams.sortMode"
-          placeholder="按时间排序"
-          style="width: 240px;"
-        >
+        <el-select v-model="queryParams.sortMode" style="width: 240px;">
+          <el-option label="按ID排序" value="Default">按ID排序</el-option>
           <el-option label="按时间排序" value="New">按时间排序</el-option>
           <el-option label="按热度排序" value="Hot">按热度排序</el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item>
-        <el-button
-          type="primary"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
-          >搜索</el-button
-        >
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-          >重置</el-button
-        >
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          >新增</el-button
-        >
+        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          >删除</el-button
-        >
+        <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple"
+          @click="handleDelete">删除</el-button>
       </el-col>
       <!-- <el-col :span="1.5">
         <el-button
@@ -118,56 +71,23 @@
         >
       </el-col> -->
       <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-refresh"
-          size="mini"
-          @click="handleRefreshCache"
-          >刷新缓存</el-button
-        >
+        <el-button type="danger" plain icon="el-icon-refresh" size="mini" @click="handleRefreshCache">刷新缓存</el-button>
       </el-col>
-      <right-toolbar
-        :showSearch.sync="showSearch"
-        @queryTable="getList"
-      ></right-toolbar>
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table
-      v-loading="loading"
-      :data="TableData"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column
-        type="selection"
-        width="55"
-        align="center"
-        fixed="left"
-      />
+    <el-table v-loading="loading" :data="TableData" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column label="ID" align="center" prop="seriesId" fixed="left" />
-      <el-table-column
-        label="名称"
-        align="center"
-        prop="seriesName"
-        :show-overflow-tooltip="true"
-        width="250"
-      >
+      <el-table-column label="名称" align="center" prop="seriesName" :show-overflow-tooltip="true" width="250">
         <template slot-scope="scope" class="postpage-warp-column">
-          <el-button type="text"
-            @click="showpostDetails(scope.row)"
-          >
+          <el-button type="text" @click="showpostDetails(scope.row)">
             <span>{{ scope.row.seriesName }}</span>
           </el-button>
         </template>
       </el-table-column>
 
-      <el-table-column
-        label="简介"
-        align="center"
-        prop="abstract"
-        width="150"
-        :show-overflow-tooltip="true"
-      >
+      <el-table-column label="简介" align="center" prop="abstract" width="150" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{ scope.row.abstract }}</span>
         </template>
@@ -186,21 +106,10 @@
         </template>
       </el-table-column> -->
 
-      <el-table-column
-        label="标签"
-        align="center"
-        :show-overflow-tooltip="true"
-        prop="tag"
-        width="400"
-      >
+      <el-table-column label="标签" align="center" :show-overflow-tooltip="true" prop="tag" width="400">
         <template slot-scope="scope" class="postpage-warp-column">
-          <el-button
-            size="mini"
-            v-for="item in scope.row.tag"
-            :key="item"
-            :type="item.type"
-            @click="showtagDetails(item)"
-          >
+          <el-button size="mini" v-for="item in scope.row.tag" :key="item.tagId" :type="item.type"
+            @click="showtagDetails(item)">
             <span>{{ item.content }}</span>
           </el-button>
         </template>
@@ -213,24 +122,18 @@
         :show-overflow-tooltip="true"
       /> -->
 
-      <el-table-column label="喜欢" align="center" prop="likes"  :show-overflow-tooltip="true"/>
-      <el-table-column label="浏览" align="center" prop="views"  :show-overflow-tooltip="true"/>
-      <el-table-column label="分享" align="center" prop="shares"  :show-overflow-tooltip="true"/>
-      <el-table-column label="收藏" align="center" prop="collect"  :show-overflow-tooltip="true"/>
+      <el-table-column label="喜欢" align="center" prop="likes" :show-overflow-tooltip="true" />
+      <el-table-column label="浏览" align="center" prop="views" :show-overflow-tooltip="true" />
+      <el-table-column label="分享" align="center" prop="shares" :show-overflow-tooltip="true" />
+      <el-table-column label="收藏" align="center" prop="collect" :show-overflow-tooltip="true" />
 
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        width="150"
-        :show-overflow-tooltip="true"
-      >
+      <el-table-column label="创建时间" align="center" prop="createTime" width="150" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
 
-      
+
 
       <!-- <el-table-column
         label="备注"
@@ -239,72 +142,34 @@
         :show-overflow-tooltip="true"
         width="300"
       /> -->
-      <el-table-column
-        label="操作"
-        align="center"
-        class-name="small-padding fixed-width"
-        fixed="right"
-        width="200"
-      >
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="200">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            >修改</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            style="color: crimson;"
-            @click="handleDelete(scope.row)"
-            >删除</el-button
-          >
+          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-delete" style="color: crimson;"
+            @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
+      @pagination="getList" />
 
     <!-- 添加或修改参数配置对话框 -->
-    <el-dialog
-      :title="title"
-      :visible.sync="config_open"
-      width="35vw"
-      append-to-body
-    >
+    <el-dialog :title="title" :visible.sync="config_open" width="35vw" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item v-if="form.seriesId" label="ID" prop="seriesId">
           <el-input v-model="form.seriesId" readonly />
         </el-form-item>
 
         <el-form-item label="名称" prop="seriesName">
-          <el-input v-model="form.postTitle" placeholder="请输入帖子标题" />
+          <el-input v-model="form.seriesName" placeholder="请输入帖子标题" />
         </el-form-item>
-        
+
         <el-form-item label="所属用户" prop="userId">
-          <el-select
-              v-model="userList"
-              filterable
-              clearable
-              placeholder="请选择所属用户"
-            >
-              <el-option
-                v-for="item in userList"
-                :key="item.userId"
-                :value="item.userId"
-                :label="item.userName"
-              >
-              </el-option>
-            </el-select>
+          <el-select v-model="form.userId" filterable clearable placeholder="请选择所属用户">
+            <el-option v-for=" item in myUserList" :key="item.userId" :value="item.userId" :label="item.userName">
+            </el-option>
+          </el-select>
         </el-form-item>
 
         <!-- <el-form-item label="" prop="postKeywords">
@@ -443,12 +308,8 @@
         </el-form-item> -->
 
         <el-form-item label="简介" prop="abstract">
-          <el-input
-            v-model="form.abstract"
-            type="textarea"
-            placeholder="请输入内容"
-            :autosize="{ minRows: 5, maxRows: 20 }"
-          ></el-input>
+          <el-input v-model="form.abstract" type="textarea" placeholder="请输入内容"
+            :autosize="{ minRows: 5, maxRows: 20 }"></el-input>
         </el-form-item>
 
         <!-- <el-form-item label="回答" prop="postAnswer">
@@ -477,12 +338,7 @@
     </el-dialog>
 
     <!-- 显示标签详情对话框 -->
-    <el-dialog
-      :title="title"
-      :visible.sync="detail_open"
-      width="600px"
-      append-to-body
-    >
+    <el-dialog :title="title" :visible.sync="detail_open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="系列名称" prop="tagName">
           <el-input v-model="form.tagName" readonly />
@@ -493,7 +349,7 @@
         <el-form-item label="标签级别" prop="tagClass">
           <el-input v-model="form.tagClass" readonly />
         </el-form-item>
-        <el-form-item label="标签继承关系" prop="frontTagTree">
+        <!-- <el-form-item label="标签继承关系" prop="frontTagTree">
           <el-tag
             :key="tag.tagName"
             v-for="tag in form.frontTagTree"
@@ -502,44 +358,25 @@
           >
             {{ tag.tagName }}
           </el-tag>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="备注" prop="remark">
-          <el-input
-            v-model="form.remark"
-            type="textarea"
-            readonly
-            :autosize="{ minRows: 5, maxRows: 15 }"
-          ></el-input>
+          <el-input v-model="form.remark" type="textarea" readonly :autosize="{ minRows: 5, maxRows: 15 }"></el-input>
         </el-form-item>
       </el-form>
     </el-dialog>
 
-    <el-dialog
-      :title="title"
-      :visible.sync="post_detail_open"
-      width="600px"
-      append-to-body
-    >
+    <el-dialog :title="title" :visible.sync="post_detail_open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="标题" prop="postTitle">
           <el-input v-model="form.postTitle" readonly />
         </el-form-item>
         <el-form-item label="帖子内容" prop="postContent">
-          <el-input
-            v-model="form.postContent"
-            type="textarea"
-            readonly
-            :autosize="{ minRows: 5, maxRows: 15 }"
-          ></el-input>
+          <el-input v-model="form.postContent" type="textarea" readonly
+            :autosize="{ minRows: 5, maxRows: 15 }"></el-input>
         </el-form-item>
         <el-form-item label="帖子回答" prop="postAnswer">
-          <el-input
-            v-model="form.postAnswer"
-            type="textarea"
-            readonly
-            :autosize="{ minRows: 5, maxRows: 15 }"
-          ></el-input>
+          <el-input v-model="form.postAnswer" type="textarea" readonly :autosize="{ minRows: 5, maxRows: 15 }"></el-input>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -547,9 +384,10 @@
 </template>
 
 <style lang="scss">
-.el-tag + .el-tag {
+.el-tag+.el-tag {
   margin-left: 10px;
 }
+
 .button-new-tag {
   margin-left: 10px;
   height: 32px;
@@ -557,16 +395,18 @@
   padding-top: 0;
   padding-bottom: 0;
 }
+
 .input-new-tag {
   width: 90px;
   margin-left: 10px;
   vertical-align: bottom;
 }
-.configPageAddTagBtn{
+
+.configPageAddTagBtn {
   margin-left: 10px;
 }
 
-.postpage-warp-column{
+.postpage-warp-column {
   // display: flex;
   // flex-direction: column;
   // justify-content: center;
@@ -583,7 +423,7 @@ import {
   getTag,
   getFrontTagTree,
 } from "@/api/manage/tag.js";
-import { getSeriesBrief } from "@/api/manage/works.js";
+import { getSeriesBrief, addSeries, updateSeries, delSeries } from "@/api/manage/works.js";
 import { listUser } from "@/api/system/user.js"
 export default {
   name: "Post",
@@ -621,7 +461,7 @@ export default {
         seriesId: undefined,
         seriesName: undefined,
         seriesTag: undefined,
-        sortMode: "New"
+        sortMode: "Default"
       },
       // 表单参数
       form: {},
@@ -636,21 +476,22 @@ export default {
         postTime: [
           { required: true, message: "发帖时间不能为空", trigger: "blur" },
         ],
+        number: [
+            { required: true, message: '不能为空' },
+            { type: 'number', message: '必须为数字值' }
+        ],
+        userId: [
+          {required: true, message: '用户不能为空'}
+        ],
+        seriesName: [
+          {required: true, message: '系列名不能为空'}
+        ],
       },
       configPageKeywordInputVisiable: false,
       configPageKeywordInputValue: "",
       configPageTagAddVisiable: false,
-      configPageFirstTagValue: "", //储存选中的一级标签的tagName
-      configPageSecondTagValue: "",
-      configPageThirdTagValue: "",
-      firstTags: [],
-      secondTags: [],
-      thirdTags: [],
-      firstTagSelectLoading: false,
-      secondTagSelectLoading: false,
-      thirdTagSelectLoading: false,
-      userList: [],
-      configPageUserId: undefined
+      configPageUserId: undefined,
+      myUserList: [],
     };
   },
   created() {
@@ -665,16 +506,20 @@ export default {
   methods: {
     /** 查询标签类型列表 */
     getList() {
+      console.log('执行getList');
       this.loading = true;
 
       getSeriesBrief(this.queryParams).then((res) => {
         console.log('成功取得series数据');
+        console.log(res.data);
         this.TableData = res.data;
         this.total = res.length;
         this.loading = false;
       })
 
-
+      listUser().then((response) => {
+        this.myUserList = response.data;
+      })
     },
 
     // 取消按钮
@@ -690,16 +535,13 @@ export default {
         seriesTag: [],
         abstract: undefined,
         createTime: undefined,
-        userId: undefined
+        userId: undefined,
+        likes: undefined,
+        views: undefined,
+        shares: undefined,
+        collect: undefined
       };
       this.resetForm("form");
-      this.configPageFirstTagValue = "";
-      this.configPageSecondTagValue = "";
-      this.configPageThirdTagValue = "";
-      this.configPageKeywordInputVisiable = "";
-      this.secondTags = []
-      this.thirdTags = []
-      this.userList = []
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -715,34 +557,24 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-      
-      listUser().then((response) => {
-        console.log("拿到userList");
-        this.userList = response.data;
-        console.log(this.userList)
-      })
-
       this.config_open = true;
       this.title = "添加系列";
 
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.postID);
+      this.ids = selection.map((item) => item.seriesId);
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      // const postIDData = row.postID;
-      // getPost({ postID: postIDData }).then((response) => {
-      //   this.form = response.data[0];
-      //   this.config_open = true;
-      //   this.title = "帖子详情&修改";
-      // });
-      listUser().then((response) => {
-        this.userList = response.data;
+      console.log('seriesId: '+row.seriesId)
+      getSeriesBrief({ seriesId: row.seriesId}).then((res) => {
+        console.log('成功获取到单个series数据')
+        console.log(res.data[0])
+        this.form = res.data[0];
         this.config_open = true;
         this.title = "修改系列"
       })
@@ -755,7 +587,7 @@ export default {
         console.log("点开详情页面，收到数据");
         console.log(res);
         this.form = res.data[0];
-        getFrontTagTree({tagName:tagName}).then((res) => {
+        getFrontTagTree({ tagName: tagName }).then((res) => {
           this.form.frontTagTree = res.data;
           this.detail_open = true;
           this.title = "标签详情";
@@ -766,7 +598,7 @@ export default {
     showpostDetails(row) {
       this.reset();
       const postIDData = row.postID;
-      getPost({ postID: postIDData }).then((response) =>{
+      getPost({ postID: postIDData }).then((response) => {
         console.log("点开详情页面，收到数据")
         this.form = response.data[0];
         console.log(this.form);
@@ -779,14 +611,14 @@ export default {
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          if (this.form.postID != undefined) {
-            updatePost(this.form).then((response) => {
+          if (this.form.seriesId != undefined) {
+            updateSeries(this.form).then((response) => {
               this.$modal.msgSuccess("修改成功");
               this.config_open = false;
               this.getList();
             });
           } else {
-            addPost(this.form).then((response) => {
+            addSeries(this.form).then((response) => {
               this.$modal.msgSuccess("新增成功");
               this.config_open = false;
               this.getList();
@@ -797,23 +629,27 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const postIDList = row.postID ? [row.postID+""] : this.ids;
+      const seriesIdList = row.seriesId ? [row.seriesId + ""] : this.ids;
       this.$modal
-        .confirm('是否确认删除ID为"' + postIDList.toString() + '"的数据项？')
+        .confirm('是否确认删除ID为"' + seriesIdList.toString() + '"的数据项？')
         .then(() => {
           // return delPost(postID);
-          postIDList.forEach((item,index) => {
-            delPost({postID:item}).then(()=>{
-              this.$modal.msgSuccess("删除"+item+"成功");
-            }).catch(()=>{
-              this.$modal.msgError('删除'+item+'失败');
-            })
+          // seriesIdList.forEach((item, index) => {
+          //   delSeries({ seriesId: item }).then(() => {
+          //     this.$modal.msgSuccess("删除" + item + "成功");
+          //   }).catch(() => {
+          //     this.$modal.msgError('删除' + item + '失败');
+          //   })
+          // })
+          // console.log('完成删除then');
+
+          delSeries({seriesIdList: seriesIdList}).then(() => {
+            this.$modal.msgSuccess("删除成功");
+            this.getList();
+          }).catch(() => {
+            this.$modal.msgError('删除失败');
           })
         })
-        .then(() => {
-          this.getList();
-        })
-        .catch(() => {});
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -893,7 +729,7 @@ export default {
     },
     //删除标签
     handleConfigPageTagClose(tag) {
-      this.form.postTag.splice(this.form.postTag.indexOf(tag),1);
+      this.form.postTag.splice(this.form.postTag.indexOf(tag), 1);
     },
     //显示添加标签选项
     showConfigPageTagAdd() {
@@ -907,7 +743,7 @@ export default {
     },
     //处理tagAdd选择改变
     handleTagAddSelectChanged() {
-      
+
       // if (tagClass == 1 && this.configPageFirstTagValue) {
       //   this.secondTagSelectLoading = true
       //   this.thirdTagSelectLoading = true
@@ -929,22 +765,22 @@ export default {
       // }
     },
 
-    
+
 
     //处理用户点击标签添加的clear
-    handleTagAddSelectClear(tagClass){
-      if(tagClass == 1){
+    handleTagAddSelectClear(tagClass) {
+      if (tagClass == 1) {
         //如果clear了第一个，则将2、3都删掉
         this.configPageFirstTagValue = ""
         this.configPageSecondTagValue = ""
         this.configPageThirdTagValue = ""
         this.secondTags = []
         this.thirdTags = []
-      }else if(tagClass == 2){
+      } else if (tagClass == 2) {
         this.configPageSecondTagValue = ""
         this.configPageThirdTagValue = ""
         this.thirdTags = []
-      }else if(tagClass == 3){
+      } else if (tagClass == 3) {
         this.configPageThirdTagValue = ""
       }
     },
