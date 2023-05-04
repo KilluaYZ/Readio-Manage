@@ -4,7 +4,7 @@ import request from '@/utils/request'
 //获取文件信息
 export function getFileInfo(params) {
     return request({
-      url: '/file/getResInfo',
+      url: '/file/getFileInfo',
       method: 'get',
       params: params
     })
@@ -21,10 +21,38 @@ export function getFileBinaryById(params) {
 }
 
 //获取图片url
-export function getImgUrl(params, id) {
-  return getFileBinaryById(params).then((res) => {
-    const imgUrl = window.URL.createObjectURL(new window.Blob([res]), {type: 'image/'+params.fileType})
-    
-    
+export function getImgUrl(fileId) {
+  return getFileBinaryById(fileId).then((res) => {
+    console.log('res = ')
+    console.log(res)
+    const imgUrl = window.URL.createObjectURL(new window.Blob([res]))
+    return Promise.resolve(imgUrl)
+  })
+}
+
+//修改文件信息
+export function updateFileInfo(data) {
+  return request({
+    url: '/file/updateFileInfo',
+    method: 'post',
+    data: data
+  })
+}
+
+//上传文件
+export function uploadFile(data) {
+  return request({
+    url: '/file/uploadFile',
+    method: 'post',
+    data: data
+  })
+}
+
+//删除文件
+export function delFile(params) {
+  return request({
+    url: '/file/delFile',
+    method: 'get',
+    params: params
   })
 }

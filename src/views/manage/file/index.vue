@@ -6,14 +6,14 @@
           @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="类别" prop="fileType">
-        <el-select v-model="queryParams.fileType" placeholder="文件类别" clearable style="width: 240px;padding-right: 25px;">
-          <!-- <el-option label="1" value="1">1</el-option>
+        <!-- <el-select v-model="queryParams.fileType" placeholder="文件类别" clearable style="width: 240px;padding-right: 25px;">
+          <el-option label="1" value="1">1</el-option>
           <el-option label="2" value="2">2</el-option>
-          <el-option label="3" value="3">3</el-option> -->
-        </el-select>
+          <el-option label="3" value="3">3</el-option>
+        </el-select> -->
+        <el-input v-model="queryParams.fileType" placeholder="请输入文件类型" clearable style="width: 240px"
+          @keyup.enter.native="handleQuery" />
       </el-form-item>
-
-
 
       <el-form-item label="排序方式" prop="sortMode">
         <el-select v-model="queryParams.sortMode" placeholder="按序号排序" clearable style="width: 240px;">
@@ -32,10 +32,10 @@
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple"
           @click="handleDelete">删除</el-button>
-      </el-col>
+      </el-col> -->
       <!-- <el-col :span="1.5">
         <el-button
           type="warning"
@@ -53,7 +53,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="fileList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+      <!-- <el-table-column type="selection" width="55" align="center" /> -->
 
       <el-table-column label="预览" align="center" prop="imgUrl" :show-overflow-tooltip="true">
         <template slot-scope="scope">
@@ -62,8 +62,7 @@
           </el-button> -->
           <!-- <span>{{ scope.row }}</span> -->
           <el-image v-if="scope.row.imgUrl" style="width: 100px; 
-          height: 100px" :src="scope.row.imgUrl" fit="cover"
-          :preview-src-list="[scope.row.imgUrl]">
+          height: 100px" :src="scope.row.imgUrl" fit="cover" :preview-src-list="[scope.row.imgUrl]">
           </el-image>
 
         </template>
@@ -123,17 +122,43 @@
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" :visible.sync="config_open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="标签名" prop="tagName">
-          <el-input v-model="form.tagName" placeholder="请输入标签名称" />
+
+        <el-form-item v-if="(imgTypeList.indexOf(form.fileType) > -1) && (form.imgUrl)" label="文件预览">
+          <el-image style="width: 100px; 
+          height: 100px" :src="form.imgUrl" fit="cover" :preview-src-list="[form.imgUrl]">
+          </el-image>
         </el-form-item>
-        <el-form-item label="父标签名" prop="tagParentName">
-          <!-- <el-input v-model="form.tagParentName" placeholder="请输入父标签名称" /> -->
-          <el-select v-model="form.tagParentName" filterable placeholder="父标签名" :disabled="configPageParentTagDisabled">
-            <el-option v-for="item in configPageParentTags" :key="item.tagName" :value="item.tagName">
-            </el-option>
-          </el-select>
+
+        <el-form-item v-if="!form.fileId" label="">
+          <el-upload action="#" :http-request="requestUpload" :show-file-list="false" :before-upload="beforeUpload">
+            <el-button size="small">
+              选择文件
+              <i class="el-icon-upload el-icon--right"></i>
+            </el-button>
+          </el-upload>
         </el-form-item>
-        <el-form-item label="标签级别" prop="tagClass" v-if="!form.tagID">
+
+        <el-form-item v-if="form.fileId" label="文件ID" prop="fileId">
+          <el-input readonly v-model="form.fileId" />
+        </el-form-item>
+
+        <el-form-item label="文件名" prop="fileName">
+          <el-input v-model="form.fileName" placeholder="请输入文件名" />
+        </el-form-item>
+
+        <el-form-item label="文件类型" prop="fileType">
+          <template v-if="form.fileId">
+            <el-input readonly v-model="form.fileType" />
+          </template>
+          <template v-else>
+            <el-select v-model="form.fileType" filterable placeholder="文件类型">
+              <el-option v-for="(item, index) in imgTypeList.concat(fileTypeList)" :key="index" :value="item">
+              </el-option>
+            </el-select>
+          </template>
+        </el-form-item>
+
+        <!-- <el-form-item label="标签级别" prop="tagClass" v-if="!form.tagID">
           <el-radio-group v-model="form.tagClass" size="small"
             @change="handleConfigPageParentTagNameSelectChanged(form.tagClass)">
             <el-radio-button label="1" value="1">级别1</el-radio-button>
@@ -144,7 +169,9 @@
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"
             :autosize="{ minRows: 5, maxRows: 15 }"></el-input>
-        </el-form-item>
+        </el-form-item> -->
+
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -185,7 +212,7 @@
 //   refreshCache,
 // } from "@/api/system/dict/type";
 
-import { getFileInfo, getFileBinaryById, getImgUrl } from "@/api/manage/file.js";
+import { getFileInfo, getFileBinaryById, getImgUrl, updateFileInfo, uploadFile, delFile } from "@/api/manage/file.js";
 
 export default {
   name: "Tag",
@@ -235,7 +262,8 @@ export default {
       },
       configPageParentTags: [],
       configPageParentTagDisabled: false,
-      imgTypeList: ["jpg", "jpeg", "png", "svg", "gif"],
+      imgTypeList: ["jpg", "jpeg", "png", "svg", "gif", "tif"],
+      fileTypeList: ["txt", "mobi", "epub", "pdf"],
       downloadingUrl: process.env.VUE_APP_BASE_API + "/file/getFileBinaryById/",
       fileList: [],
       tableShow: true
@@ -276,11 +304,11 @@ export default {
         for (let i = 0; i < this.fileList.length; ++i) {
           if (this.imgTypeList.indexOf(this.fileList[i].fileType) > -1) {
             promiseArray.push(
-              getFileBinaryById({ fileId: this.fileList[i].fileId }).then((res) => {
+              getImgUrl({ fileId: this.fileList[i].fileId }).then((res) => {
                 // const imgUrl = window.URL.createObjectURL(new window.Blob([res]), { type: 'image/' + this.fileList[i].fileType });
-                const imgUrl = window.URL.createObjectURL(new window.Blob([res]));
+                // const imgUrl = window.URL.createObjectURL(new window.Blob([res]));
                 // this.fileList[i].imgUrl = imgUrl;
-                this.$set(this.fileList[i], 'imgUrl', imgUrl);
+                this.$set(this.fileList[i], 'imgUrl', res);
                 console.log("成功获取到了图片数据: " + i);
                 console.log(this.fileList[i].imgUrl);
               }).catch((err) => {
@@ -314,11 +342,11 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        tagName: undefined,
-        tagClass: undefined,
-        tagParentName: undefined,
-        tagDate: undefined,
-        remark: undefined,
+        fileName: undefined,
+        fileType: undefined,
+        fileContent: undefined,
+        fileId: undefined,
+        imgUrl: require('@/assets/icons/add.png')
       };
       this.resetForm("form");
     },
@@ -348,16 +376,14 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const tagNameData = row.tagName;
-      getTag({ tagName: tagNameData }).then((response) => {
-        console.log("点开修改页面，收到数据");
-        console.log(response)
-        this.form = response.data[0];
-        this.handleConfigPageParentTagNameSelectChanged(this.form.tagClass)
-        console.log("this.form");
-        console.log(this.form);
-        this.config_open = true;
-        this.title = "修改标签类型";
+      const fileId = row.fileId;
+      getFileInfo({ fileId: fileId }).then((res) => {
+        this.form = res.data[0];
+        getImgUrl({ fileId: fileId }).then((res) => {
+          this.form.imgUrl = res;
+          this.config_open = true;
+          this.title = "修改标签类型";
+        })
       });
     },
     showDetials(param) {
@@ -383,14 +409,14 @@ export default {
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          if (this.form.tagID != undefined) {
-            updateTag(this.form).then((response) => {
+          if (this.form.fileId != undefined) {
+            updateFileInfo(this.form).then(() => {
               this.$modal.msgSuccess("修改成功");
               this.config_open = false;
               this.getList();
             });
           } else {
-            addTag(this.form).then((response) => {
+            uploadFile(this.form).then(() => {
               this.$modal.msgSuccess("新增成功");
               this.config_open = false;
               this.getList();
@@ -401,28 +427,30 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const tagName = row.tagName ? [row.tagName + ""] : this.ids;
-      console.log("tagName:");
-      console.log(tagName);
-      console.log("ids:");
-      console.log(this.ids);
+      // const fileId = row.fileId ? [row.fileId + ""] : this.ids;
+      const fileId = row.fileId;
       this.$modal
-        .confirm('是否确认删除标签名称为"' + tagName.toString() + '"的数据项？')
+        .confirm('是否确认删除名称为"' + row.fileName.toString()+" ID为 "+ fileId + '"的数据项？')
         .then(() => {
-          tagName.forEach((item) => {
-            delTag({ tagName: item })
-              .then(() => {
-                this.$modal.msgSuccess('成功删除标签"' + item + '"');
-              })
-              .catch(() => {
-                this.$modal.msgError('删除标签"' + item + '"失败');
-              });
+          // fileId.forEach((item) => {
+          //   delFile({ fileId: item })
+          //     .then(() => {
+          //       this.$modal.msgSuccess('删除成功"' + item + '"');
+          //     })
+          //     .catch(() => {
+          //       this.$modal.msgError('删除文件"' + item + '"失败');
+          //     });
+          // });
+          delFile({ fileId: fileId })
+          .then(() => {
+            this.$modal.msgSuccess('删除成功"' + row.fileName + '"');
+            this.getList();
+          })
+          .catch(() => {
+            this.$modal.msgError('删除文件"' + row.fileName + '"失败');
+            this.getList();
           });
         })
-        .then(() => {
-          this.getList();
-        })
-        .catch(() => { });
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -451,6 +479,36 @@ export default {
         getTag({ tagClass: selectedTagClass - 1 }).then((res) => {
           this.configPageParentTags = res.data;
         });
+      }
+    },
+    handleConfigpageAddFile() {
+      alert("hi");
+    },
+    // 覆盖默认的上传行为
+    requestUpload() {
+    },
+    // 上传预处理
+    beforeUpload(file) {
+      if (file.type.indexOf("image/") == -1) {
+        this.$modal.msgError("文件格式错误，请上传图片类型,如：JPG，PNG后缀的文件。");
+      } else {
+        // console.log("file")
+        // console.log(file)
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          // console.log("reader.result");
+          // console.log(reader.result);
+          this.form.imgUrl = reader.result;
+          this.form.fileContent = reader.result.substr(reader.result.indexOf(",")+1, reader.result.length - reader.result.indexOf(","));
+          let fileFullName = file.name.trim();
+          let fileName = fileFullName.substr(0,fileFullName.lastIndexOf("."));
+          console.log("fileName = "+fileName);
+          let fileType = fileFullName.substr(fileFullName.lastIndexOf(".") + 1,fileFullName.length - fileFullName.lastIndexOf(".") - 1);
+          console.log("fileType = "+fileType);
+          this.form.fileName = fileName;
+          this.form.fileType = fileType;
+        };
       }
     },
   },
