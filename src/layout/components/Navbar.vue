@@ -184,6 +184,7 @@ export default {
           width: 40px;
           height: 40px;
           border-radius: 10px;
+          object-fit: cover;
         }
 
         .el-icon-caret-bottom {

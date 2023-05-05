@@ -7,6 +7,7 @@
           <vue-cropper
             ref="cropper"
             :img="options.img"
+            :src="options.src"
             :info="true"
             :autoCrop="options.autoCrop"
             :autoCropWidth="options.autoCropWidth"
@@ -57,8 +58,8 @@
 import store from "@/store";
 import { VueCropper } from "vue-cropper";
 import { uploadAvatar } from "@/api/system/user";
-import { debounce } from '@/utils'
-
+import { debounce } from '@/utils';
+import { getImgUrl } from '@/api/manage/file';
 export default {
   components: { VueCropper },
   props: {

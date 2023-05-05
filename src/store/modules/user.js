@@ -1,6 +1,7 @@
 import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { useMock } from '@/settings'
+import { getImgUrl } from '../../api/manage/file'
 const user = {
   state: {
     token: getToken(),
@@ -46,6 +47,18 @@ const user = {
       })
     },
 
+    blobToBase64(blob){
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+          resolve(e.target.result);
+        }
+        fileReader.readAsDataURL(blob);
+        fileReader.onerror = () => {
+          reject(new Error('blob to base64 转换出错'));
+        }
+      });
+    },
     // 获取用户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
@@ -53,7 +66,21 @@ const user = {
           console.log('get user info')
           console.log(res)
           const user = res.data.userInfo
-          const avatar = (user.avatar == "" || user.avatar == null) ? require("@/assets/images/profile.jpg") : process.env.VUE_APP_BASE_API + user.avatar;
+          // const avatar = (user.avatar == "" || user.avatar == null) ? require("@/assets/images/profile.jpg") : process.env.VUE_APP_BASE_API + user.avatar;
+          // const avatar = (user.avatar == "" || user.avatar == null) ?  require("@/assets/images/profile.jpg") : {type:"fileId", content:user.avator};
+
+          if (user.avator == "" || user.avator == null){
+            console.log('in set_avatar 分支1');
+            commit('SET_AVATAR', require("@/assets/images/profile.jpg"))
+          } else{
+            console.log('in set_avatar 分支2');
+            console.log('user avator = ');
+            console.log(user.avator);
+            getImgUrl({fileId: user.avator}).then((res) => {
+              console.log(res);
+              commit('SET_AVATAR', res);
+            })
+          }
           if (user.roles && user.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', user.roles)
             commit('SET_PERMISSIONS', user.permissions)
@@ -61,7 +88,7 @@ const user = {
             commit('SET_ROLES', ['ROLE_DEFAULT'])
           }
           commit('SET_NAME', user.userName)
-          commit('SET_AVATAR', avatar)
+          
           resolve(res)
         }).catch(error => {
           reject(error)

@@ -23,7 +23,7 @@ export function getFileBinaryById(params) {
 //获取图片url
 export function getImgUrl(fileId) {
   return getFileBinaryById(fileId).then((res) => {
-    console.log('res = ')
+    console.log('getImgUrl :: res = ')
     console.log(res)
     const imgUrl = window.URL.createObjectURL(new window.Blob([res]))
     return Promise.resolve(imgUrl)

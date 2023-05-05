@@ -1,23 +1,11 @@
 <template>
   <div class="app-container">
-    <el-form
-      :model="queryParams"
-      ref="queryForm"
-      size="small"
-      :inline="true"
-      v-show="showSearch"
-      label-width="68px"
-    >
-      <el-form-item label="标签名称" prop="tagName">
-        <el-input
-          v-model="queryParams.tagName"
-          placeholder="请输入标签名称"
-          clearable
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="标签内容" prop="content">
+        <el-input v-model="queryParams.content" placeholder="请输入标签内容" clearable style="width: 240px"
+          @keyup.enter.native="handleQuery" />
       </el-form-item>
-      <el-form-item label="级别" prop="tagClass">
+      <!-- <el-form-item label="级别" prop="tagClass">
         <el-select
           v-model="queryParams.tagClass"
           placeholder="标签级别"
@@ -28,59 +16,32 @@
           <el-option label="2" value="2">2</el-option>
           <el-option label="3" value="3">3</el-option>
         </el-select>
-      </el-form-item>
-      
-      
+      </el-form-item> -->
+
+
 
       <el-form-item label="排序方式" prop="sortMode">
-        <el-select
-          v-model="queryParams.sortMode"
-          placeholder="按序号排序"
-          clearable
-          style="width: 240px;"
-        >
+        <el-select v-model="queryParams.sortMode" placeholder="按序号排序" clearable style="width: 240px;">
           <el-option label="默认排序" value="Default"></el-option>
           <el-option label="按热度排序" value="Hot"></el-option>
           <el-option label="按时间排序" value="New"></el-option>
 
         </el-select>
       </el-form-item>
-      
+
       <el-form-item>
-        <el-button
-          type="primary"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
-          >搜索</el-button
-        >
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-          >重置</el-button
-        >
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          >新增</el-button
-        >
+        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          >删除</el-button
-        >
+        <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple"
+          @click="handleDelete">删除</el-button>
       </el-col>
       <!-- <el-col :span="1.5">
         <el-button
@@ -93,116 +54,116 @@
         >
       </el-col> -->
       <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-refresh"
-          size="mini"
-          @click="handleRefreshCache"
-          >刷新缓存</el-button
-        >
+        <el-button type="danger" plain icon="el-icon-refresh" size="mini" @click="handleRefreshCache">刷新缓存</el-button>
       </el-col>
-      <right-toolbar
-        :showSearch.sync="showSearch"
-        @queryTable="getList"
-      ></right-toolbar>
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table
-      v-loading="loading"
-      :data="tagTableData"
-      @selection-change="handleSelectionChange"
-    >
+    <el-table v-loading="loading" :data="tagTableData" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column
-        label="名称"
-        align="center"
-        prop="tagName"
-        :show-overflow-tooltip="true"
-      >
+
+      <el-table-column label="ID" align="center" prop="tagId" :show-overflow-tooltip="true" />
+
+      <el-table-column label="内容" align="center" prop="content" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <el-button  type="text" @click="showDetials({data:scope.row,row:'selftag'})">
-            <span>{{ scope.row.tagName }}</span>
-          </el-button>
-        </template>      
-      </el-table-column>
-      <el-table-column
-        label="父标签"
-        align="center"
-        :show-overflow-tooltip="true"
-        prop="tagParentName"
-      >
-        <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="showDetials({data:scope.row,row:'parent'})">
-            <span>{{ scope.row.tagParentName }}</span>
+          <el-button type="text" @click="showDetials(scope.row)">
+            <span>{{ scope.row.content }}</span>
           </el-button>
         </template>
       </el-table-column>
-
-      <el-table-column label="级别" align="center" prop="tagClass">
-        <!--<template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status" />
-          <span>{{scope.row.tagClass}}</span>
-        </template>-->
+      <el-table-column label="被引用数" align="center" prop="linkedTimes">
       </el-table-column>
-      <el-table-column label="热度" align="center" prop="tagPopularity">
-      </el-table-column>
-
-
       <el-table-column label="创建时间" align="center" prop="createTime"></el-table-column>
-  
-      <el-table-column
-        label="备注"
-        align="center"
-        prop="remark"
-        :show-overflow-tooltip="true"
-      />
-      <el-table-column
-        label="操作"
-        align="center"
-        class-name="small-padding fixed-width"
-      >
+
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            >修改</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            style="color: crimson;"
-            @click="handleDelete(scope.row)"
-            >删除</el-button
-          >
+          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-delete" style="color: crimson;"
+            @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
+      @pagination="getList" />
 
     <!-- 添加或修改参数配置对话框 -->
-    <el-dialog
-      :title="title"
-      :visible.sync="config_open"
-      width="500px"
-      append-to-body
-    >
+    <el-dialog :title="title" :visible.sync="config_open" :width="configPageWidth" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="标签名" prop="tagName">
-          <el-input v-model="form.tagName" placeholder="请输入标签名称" />
+        <el-form-item v-if="form.tagId" label="ID" prop="tagId">
+          <el-input v-model="form.tagId" readonly />
         </el-form-item>
-        <el-form-item label="父标签名" prop="tagParentName">
-          <!-- <el-input v-model="form.tagParentName" placeholder="请输入父标签名称" /> -->
+
+        <el-form-item label="内容" prop="content">
+          <el-input v-model="form.content" placeholder="请输入标签内容" />
+        </el-form-item>
+
+        <el-form-item v-if="form.tagId" label="创建时间" prop="createTime">
+          <el-input v-model="form.createTime" readonly />
+        </el-form-item>
+
+        <el-form-item v-if="form.tagId" label="引用情况" >
+          <!-- <el-row><el-input v-model="form.createTime" readonly /></el-row> -->
+          <el-row>
+            <template>
+              <el-table v-loading="configPageTableLoading" :data="tagSeriesList" stripe style="width: 100%">
+                <el-table-column prop="seriesName" label="名称" width="180">
+                </el-table-column>
+                <el-table-column v-if="!isShowDetail" label="操作" align="center" class-name="small-padding fixed-width">
+                  <template slot-scope="scope">
+                    <el-button size="mini" type="text" icon="el-icon-delete" style="color: crimson;"
+                      @click="handleTagSeriesDelete(form.tagId, scope.row.seriesId)">删除</el-button>
+                  </template>
+                </el-table-column>
+                <el-table-column type="expand">
+                  <template slot-scope="props">
+                    <el-form label-position="left">
+                      <el-form-item label="系列ID">
+                        <span>{{ props.row.seriesId }}</span>
+                      </el-form-item>
+                      <el-form-item label="系列名">
+                        <span>{{ props.row.seriesName }}</span>
+                      </el-form-item>
+                      <el-form-item label="作者 ID">
+                        <span>{{ props.row.userId}}</span>
+                      </el-form-item>
+                      <el-form-item label="作者名">
+                        <span>{{ props.row.userName }}</span>
+                      </el-form-item>
+                      <el-form-item label="状态">
+                        <span v-if="props.row.isFinished">已完结</span>
+                        <span v-else>未完结</span>
+                      </el-form-item>
+                      <el-form-item label="系列简介">
+                        <!-- <el-input v-model="props.row.abstract" type="textarea" readonly
+                          :autosize="{ minRows: 5, maxRows: 15 }">
+                        </el-input> -->
+                        <span>{{ props.row.abstract }}</span>
+                      </el-form-item>
+                      <el-form-item label="创建时间">
+                        <span>{{ props.row.createTime }}</span>
+                      </el-form-item>
+                      <el-form-item label="喜欢数">
+                        <span>{{ props.row.likes }}</span>
+                      </el-form-item>
+                      <el-form-item label="浏览数">
+                        <span>{{ props.row.views }}</span>
+                      </el-form-item>
+                      <el-form-item label="分享数">
+                        <span>{{ props.row.shares }}</span>
+                      </el-form-item>
+                      <el-form-item label="收藏数">
+                        <span>{{ props.row.collect }}</span>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </template>
+          </el-row>
+        </el-form-item>
+
+        <!-- <el-form-item label="父标签名" prop="tagParentName">
           <el-select
             v-model="form.tagParentName"
             filterable
@@ -216,8 +177,8 @@
             >
             </el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="标签级别" prop="tagClass" v-if="!form.tagID">
+        </el-form-item> -->
+        <!-- <el-form-item label="标签级别" prop="tagClass" v-if="!form.tagID">
           <el-radio-group
             v-model="form.tagClass"
             size="small"
@@ -227,52 +188,23 @@
             <el-radio-button label="2" value="2">级别2</el-radio-button>
             <el-radio-button label="3" value="3">级别3</el-radio-button>
           </el-radio-group>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
+        </el-form-item> -->
+        <!-- <el-form-item label="备注" prop="remark">
           <el-input
             v-model="form.remark"
             type="textarea"
             placeholder="请输入内容"
             :autosize="{ minRows: 5, maxRows: 15 }"
           ></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer" v-if="!isShowDetail">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
+
     </el-dialog>
 
-    <!-- 显示详情对话框 -->
-    <el-dialog
-      :title="title"
-      :visible.sync="detail_open"
-      width="500px"
-      append-to-body
-    >
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="标签名称" prop="tagName">
-          <el-input v-model="form.tagName" readonly />
-        </el-form-item>
-        <el-form-item label="父标签名" prop="tagParentName">
-          <el-input v-model="form.tagParentName" readonly />
-        </el-form-item>
-        <el-form-item label="标签级别" prop="tagClass">
-          <el-input v-model="form.tagClass" readonly />
-        </el-form-item>
-        <el-form-item label="创建时间" prop="createTime">
-          <el-input v-model="form.createTime" readonly />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input
-            v-model="form.remark"
-            type="textarea"
-            readonly
-            :autosize="{ minRows: 5, maxRows: 15 }"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
   </div>
 </template>
 
@@ -286,7 +218,7 @@
 //   refreshCache,
 // } from "@/api/system/dict/type";
 
-import { addTag, delTag, updateTag, getTag } from "@/api/manage/tag.js";
+import { addTag, delTag, updateTag, getTag, getAllTagSeries, delTagSeriesRelation } from "@/api/manage/tag.js";
 
 export default {
   name: "Tag",
@@ -318,11 +250,9 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        tagName: undefined,
-        tagClass: undefined,
-        tagDate: undefined,
+        content: undefined,
+        tagId: undefined,
         sortMode: "Default",
-        nameQueryMode: "blur"
       },
       // 表单参数
       form: {},
@@ -337,15 +267,19 @@ export default {
       },
       configPageParentTags: [],
       configPageParentTagDisabled: false,
+      isShowDetail: false,
+      tagSeriesList: [],
+      configPageTableLoading: false,
+      configPageWidth: "500px"
     };
   },
   created() {
     console.log(sessionStorage.getItem("tagneedRunPreset"))
-    if(sessionStorage.getItem("tagneedRunPreset") === "ok"){
+    if (sessionStorage.getItem("tagneedRunPreset") === "ok") {
       console.log("使用初始化配置")
-      if(sessionStorage.getItem("tagpresetParam") === 'Hot')
+      if (sessionStorage.getItem("tagpresetParam") === 'Hot')
         this.queryParams.sortMode = "Hot"
-      if(sessionStorage.getItem("tagpresetParam") === 'New')
+      if (sessionStorage.getItem("tagpresetParam") === 'New')
         this.queryParams.sortMode = "New"
     }
     console.log(this.queryParams.sortMode)
@@ -366,7 +300,6 @@ export default {
       //   }
       // );
       getTag(this.queryParams).then((res) => {
-        console.log("成功取得getTag mock数据");
         this.tagTableData = res.data;
         this.total = res.length;
         this.loading = false;
@@ -381,13 +314,15 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        tagName: undefined,
-        tagClass: undefined,
-        tagParentName: undefined,
-        tagDate: undefined,
-        remark: undefined,
+        content: undefined,
+        tagId: undefined,
+        createTime: undefined,
+        linkedTimes: undefined,
       };
       this.resetForm("form");
+
+      this.tagSeriesList = [];
+      this.isShowDetail = false;
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -404,39 +339,43 @@ export default {
     handleAdd() {
       this.reset();
       this.config_open = true;
-      this.title = "添加标签类型";
+      this.title = "添加标签";
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.tagName);
+      this.ids = selection.map((item) => item.tagId);
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const tagNameData = row.tagName;
-      getTag({ tagName: tagNameData }).then((response) => {
-        console.log("点开修改页面，收到数据");
-        console.log(response)
-        this.form = response.data[0];
-        this.handleConfigPageParentTagNameSelectChanged(this.form.tagClass)
-        console.log("this.form");
-        console.log(this.form);
-        this.config_open = true;
-        this.title = "修改标签类型";
+      const tagId = row.tagId;
+      getTag({ tagId: tagId }).then((res) => {
+        this.form = res.data[0];
+        // this.handleConfigPageParentTagNameSelectChanged(this.form.tagClass)
+
+        getAllTagSeries({tagId: tagId}).then((res) => {
+          this.tagSeriesList = res.data;
+          this.configPageWidth = "800px";
+          this.config_open = true;
+          this.title = "修改标签";
+        });
+        
       });
     },
-    showDetials(param) {
+    showDetials(row) {
       this.reset();
-      const tagName = param.row === 'parent' ? param.data.tagParentName : param.data.tagName;
-      getTag({ tagName: tagName }).then((res) => {
-        console.log("点开详情页面，收到数据");
-        console.log(res);
+      const tagId = row.tagId;
+      getTag({ tagId: tagId }).then((res) => {
         this.form = res.data[0];
-        console.log(res.data[0])
-        this.detail_open = true;
-        this.title = "标签详情";
+        getAllTagSeries({tagId: tagId}).then((res) => {
+          this.tagSeriesList = res.data;
+          this.config_open = true;
+          this.isShowDetail = true;
+          this.title = "查看标签详情";
+        });
+        
       });
     },
 
@@ -444,7 +383,7 @@ export default {
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          if (this.form.tagID != undefined) {
+          if (this.form.tagId != undefined) {
             updateTag(this.form).then((response) => {
               this.$modal.msgSuccess("修改成功");
               this.config_open = false;
@@ -462,28 +401,29 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const tagName = row.tagName ? [row.tagName + ""] : this.ids;
-      console.log("tagName:");
-      console.log(tagName);
-      console.log("ids:");
-      console.log(this.ids);
+      this.loading = true;
+      const tagId = row.tagId ? [row.tagId + ""] : this.ids;
+      var promiseList = [];
       this.$modal
-        .confirm('是否确认删除标签名称为"' + tagName.toString() + '"的数据项？')
+        .confirm('是否确认删除标签名称为"' + tagId.toString() + '"的数据项？')
         .then(() => {
-          tagName.forEach((item) => {
-            delTag({ tagName: item })
+          tagId.forEach((item) => {
+            promiseList.push(delTag({ tagId: item })
               .then(() => {
                 this.$modal.msgSuccess('成功删除标签"' + item + '"');
               })
               .catch(() => {
                 this.$modal.msgError('删除标签"' + item + '"失败');
-              });
+              }));
           });
+          
+        }).then(() => {
+          Promise.all(promiseList).then(() => {
+            this.getList();
+          })
         })
-        .then(() => {
-          this.getList();
-        })
-        .catch(() => {});
+        .catch(() => { this.loading = false; });
+        
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -514,6 +454,24 @@ export default {
         });
       }
     },
+    //处理删除tag对应的series的事件
+    handleTagSeriesDelete(tagId, seriesId) {
+      this.configPageTableLoading = true;
+      delTagSeriesRelation({tagId: tagId, seriesId: seriesId}).then(() => {
+        this.$modal.msgSuccess("删除成功");
+        getAllTagSeries({tagId: tagId}).then((res) => {
+          this.tagSeriesList = res.data;
+          this.configPageTableLoading = false;
+        });
+        
+      }).catch(() => {
+        this.$modal.msgError("删除失败");
+        getAllTagSeries({tagId: tagId}).then((res) => {
+          this.tagSeriesList = res.data;
+          this.configPageTableLoading = false;
+        });
+      })
+    }
   },
   watch: {
     queryParams: {

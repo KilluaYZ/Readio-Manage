@@ -69,11 +69,11 @@
       </el-table-column>
 
       <el-table-column label="名称" align="center" prop="fileName" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
+        <!-- <template slot-scope="scope">
           <el-button type="text" @click="showDetials(scope.row)">
             <span>{{ scope.row.fileName }}</span>
           </el-button>
-        </template>
+        </template> -->
       </el-table-column>
       <!-- <el-table-column
         label="父标签"
@@ -262,7 +262,7 @@ export default {
       },
       configPageParentTags: [],
       configPageParentTagDisabled: false,
-      imgTypeList: ["jpg", "jpeg", "png", "svg", "gif", "tif"],
+      imgTypeList: ["jpg", "jpeg", "png", "svg", "gif", "tif", "bmp", "ico", "webp"],
       fileTypeList: ["txt", "mobi", "epub", "pdf"],
       downloadingUrl: process.env.VUE_APP_BASE_API + "/file/getFileBinaryById/",
       fileList: [],
@@ -297,7 +297,6 @@ export default {
       //   }
       // );
       await getFileInfo(this.queryParams).then((res) => {
-        console.log("成功取得getTag mock数据");
         this.fileList = res.data;
         this.total = res.length;
         let promiseArray = []
@@ -309,8 +308,8 @@ export default {
                 // const imgUrl = window.URL.createObjectURL(new window.Blob([res]));
                 // this.fileList[i].imgUrl = imgUrl;
                 this.$set(this.fileList[i], 'imgUrl', res);
-                console.log("成功获取到了图片数据: " + i);
-                console.log(this.fileList[i].imgUrl);
+                // console.log("成功获取到了图片数据: " + i);
+                // console.log(this.fileList[i].imgUrl);
               }).catch((err) => {
                 console.log(err)
                 console.log("获取图片" + this.fileList[i].fileName + "失败");
@@ -319,13 +318,13 @@ export default {
           }
         }
 
-        console.log("promiseArray");
-        console.log(promiseArray);
+        // console.log("promiseArray");
+        // console.log(promiseArray);
 
         return Promise.all(promiseArray).then(() => {
           this.loading = false;
-          console.log('成功获取了promiseArray');
-          console.log(this.fileList);
+          // console.log('成功获取了promiseArray');
+          // console.log(this.fileList);
           // this.flushTable();
         })
       });
