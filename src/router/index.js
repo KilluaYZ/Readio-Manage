@@ -230,6 +230,21 @@ export const dynamicRoutes = [
     component: Layout,
     hidden:true,
     redirect:'noredirect',
+    roles:['manager'],
+    children:[
+      {
+        path:'pieces',
+        component: () => import('@/views/manage/pieces/index'),
+        name: "Pieces",
+        meta:{title:'帖子管理', icon: 'user'}
+      }
+    ]
+  },
+  {
+    path:'/system',
+    component: Layout,
+    hidden:true,
+    redirect:'noredirect',
     roles:['common','manager'],
     children:[
       {

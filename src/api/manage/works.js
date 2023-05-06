@@ -35,3 +35,24 @@ export function delSeries(data) {
     data: data
   })
 }
+
+
+
+//获取帖子简略信息
+export function getPiecesBrief(params) {
+  return request({
+    url: '/works/getPiecesBrief',
+    method: 'get',
+    params: params
+  })
+}
+
+//获取帖子详细信息
+export function getPiecesDetail(params) {
+  return request({
+    url: '/works/getPiecesDetail',
+    method: 'get',
+    params: params
+  })
+}
+
