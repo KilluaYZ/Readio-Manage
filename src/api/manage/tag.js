@@ -57,3 +57,12 @@ export function delTagSeriesRelation(params) {
     params: params
   })
 }
+
+//添加该tag对应的的series的联系
+export function addTagSeriesRelation(params) {
+  return request({
+    url: '/works/tag/addSeriesRelation',
+    method: 'get',
+    params: params
+  })
+}

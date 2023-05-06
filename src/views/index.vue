@@ -9,7 +9,7 @@
         </p>
       </el-col>
 
-      <el-col :xs="24" :sm="24" :md="12" :lg="4">
+      <!-- <el-col :xs="24" :sm="24" :md="12" :lg="4">
         <el-card class="info">
           <div>
             最近访问<i class="el-icon-timer"></i>
@@ -18,9 +18,9 @@
             <span><i class="el-icon-caret-right"></i>{{ latestvisit }}</span>
           </div>
         </el-card>
-      </el-col>
+      </el-col> -->
 
-      <el-col :xs="24" :sm="24" :md="12" :lg="4">
+      <!-- <el-col :xs="24" :sm="24" :md="12" :lg="4">
         <el-card class="info">
           <div>
             待办事项<i class="el-icon-warning"></i>
@@ -29,9 +29,9 @@
             <span><i class="el-icon-caret-right"></i>{{ todo }}</span>
           </div>
         </el-card>
-      </el-col>
+      </el-col> -->
 
-      <el-col :xs="24" :sm="24" :md="12" :lg="4">
+      <!-- <el-col :xs="24" :sm="24" :md="12" :lg="4">
         <el-card class="info">
           <div>
             通知公告<i class="el-icon-message-solid"></i>
@@ -40,13 +40,13 @@
             <span><i class="el-icon-caret-right"></i>{{ notice }}</span>
           </div>
         </el-card>
-      </el-col>
+      </el-col> -->
 
     </el-row>
 
     <el-divider></el-divider>
 
-    <el-row :gutter="20">
+    <!-- <el-row :gutter="20">
       <el-col :xs="24" :sm="24" :md="12" :lg="10">
         <el-card class="update-log word-cloud-card">
           <div class="header">
@@ -54,20 +54,17 @@
               放大<i class="el-icon-view el-icon--right"></i>
             </el-link>
             <h3>词云图</h3>
-            <!-- <el-image :src="img_url" :preview-src-list="img_url_list" :fit="cover" lazy></el-image> -->
           </div>  
-          <!-- <iframe v-bind:src="img_url" id="wordcloud" scrolling="no" frameborder="0"></iframe> -->
           <el-image
             style="width: 100%; height: 100%"
             :src="img_url"
             fit="cover"
             :preview-src-list="img_url_list"
             ></el-image>
-            <!-- <img  :src="img_url" /> -->
         </el-card>
-      </el-col>
+      </el-col> -->
 
-      <el-col :xs="24" :sm="24" :md="12" :lg="6">
+      <!-- <el-col :xs="24" :sm="24" :md="12" :lg="6">
         <el-card class="update-log">
           <div class="header">
             <el-link v-bind:style="HotTagSetting" :underline="false" @click="switchTagsTitle('Hot')">热门标签</el-link>
@@ -85,9 +82,9 @@
             </li>
           </ul>
         </el-card>
-      </el-col>
+      </el-col> -->
 
-      <el-col :xs="24" :sm="24" :md="12" :lg="8">
+      <!-- <el-col :xs="24" :sm="24" :md="12" :lg="8">
         <el-card class="update-log">
           <div class="header">
             <el-link v-bind:style="HotPostSetting" :underline="false" @click="switchPostsTitle('Hot')">热门帖子</el-link>
@@ -106,12 +103,12 @@
             </li>
           </ul>
         </el-card>
-      </el-col>
+      </el-col> -->
 
-    </el-row>
+    <!-- </el-row> -->
 
     <!-- 显示标签详情对话框 -->
-    <el-dialog :title="title" :visible.sync="Tag_detail_open" width="500px" append-to-body>
+    <!-- <el-dialog :title="title" :visible.sync="Tag_detail_open" width="500px" append-to-body>
       <el-form ref="form" :model="Tagform" label-width="80px">
         <el-form-item label="标签名称" prop="tagName">
           <el-input v-model="Tagform.tagName" readonly />
@@ -132,10 +129,10 @@
           <el-input v-model="Tagform.remark" type="textarea" readonly :autosize="{ minRows: 5, maxRows: 15 }"></el-input>
         </el-form-item>
       </el-form>
-    </el-dialog>
+    </el-dialog> -->
 
     
-    <el-dialog
+    <!-- <el-dialog
       :title="title"
       :visible.sync="post_detail_open"
       width="600px"
@@ -145,12 +142,6 @@
         <el-form-item label="标题" prop="postTitle">
           <el-input v-model="postform.postTitle" readonly />
         </el-form-item>
-        <!-- <el-form-item label="关键词" prop="postKeywords">
-          <el-tag :key="keyword" type="primary" v-for="keyword in postform.postKeywords" >{{ keyword }}</el-tag>
-        </el-form-item>
-        <el-form-item label="标签" prop="postTag">
-          <el-tag :key="tag.tagID" :type="tag.type" v-for="tag in postform.postTags" >{{ tag.tagName }}</el-tag>
-        </el-form-item> -->
         <el-form-item label="发帖时间" prop="postTime">
           <el-input v-model="postform.postTime" readonly />
         </el-form-item>
@@ -174,7 +165,7 @@
           ></el-input>
         </el-form-item>
       </el-form>
-    </el-dialog>
+    </el-dialog> -->
     
   </div>
 </template>

@@ -207,36 +207,19 @@
           </el-button>
         </el-form-item> -->
 
-        <!-- <el-form-item label="标签" prop="postTag">
-          <el-tag
-            :key="tag.tagName"
-            closable
-            v-for="tag in form.postTag"
-            :type="tag.type"
-            @close="handleConfigPageTagClose(tag)"
-          >
-            {{ tag.tagName }}
+        <el-form-item label="标签" prop="tag">
+          <el-tag closable v-for="tag in form.tag" :key="tag.tagId" :value="tag.tagId" :type="tag.type"
+            @close="handleConfigPageTagClose(tag)">
+            {{ tag.content }}
           </el-tag>
 
           <template v-if="configPageTagAddVisiable">
-            <el-select
-              v-model="configPageFirstTagValue"
-              filterable
-              clearable
-              placeholder="一级标签"
-              :loading="firstTagSelectLoading"
-              @change="handleTagAddSelectChanged(1)"
-              @clear="handleTagAddSelectClear(1)"
-            >
-              <el-option
-                v-for="item in firstTags"
-                :key="item.tagName"
-                :value="item.tagName"
-                :label="item.tagName"
-              >
+            <el-select v-model="configPageFirstTagValue" filterable clearable placeholder="请选择标签"
+              :loading="firstTagSelectLoading">
+              <el-option v-for="item in firstTags" :key="item.tagId" :value="item.tagId" :label="item.content">
               </el-option>
             </el-select>
-            <el-select
+            <!-- <el-select
               v-model="configPageSecondTagValue"
               filterable
               clearable
@@ -267,34 +250,19 @@
                 :value="item.tagName"
               >
               </el-option>
-            </el-select>
-            <el-button
-              size="small"
-              type="success"
-              class="configPageAddTagBtn"
-              @click="handlerConfigPageTagAdd"
-            >
+            </el-select> -->
+            <el-button size="small" type="success" class="configPageAddTagBtn" @click="handlerConfigPageTagAdd">
               确认
             </el-button>
-            <el-button
-              size="small"
-              type="danger"
-              class="configPageAddTagBtn"
-              @click="unshowConfigPageTagAdd"
-            >
+            <el-button size="small" type="danger" class="configPageAddTagBtn" @click="unshowConfigPageTagAdd">
               取消
             </el-button>
           </template>
 
-          <el-button
-            v-else
-            size="small"
-            @click="showConfigPageTagAdd"
-            class="button-new-tag"
-          >
+          <el-button v-else size="small" @click="showConfigPageTagAdd" class="button-new-tag">
             + 新标签
           </el-button>
-        </el-form-item> -->
+        </el-form-item>
 
         <!-- <el-form-item label="发帖日期" prop="postTime">
           <el-date-picker
@@ -483,14 +451,14 @@ export default {
           { required: true, message: "发帖时间不能为空", trigger: "blur" },
         ],
         number: [
-            { required: true, message: '不能为空' },
-            { type: 'number', message: '必须为数字值' }
+          { required: true, message: '不能为空' },
+          { type: 'number', message: '必须为数字值' }
         ],
         userId: [
-          {required: true, message: '用户不能为空'}
+          { required: true, message: '用户不能为空' }
         ],
         seriesName: [
-          {required: true, message: '系列名不能为空'}
+          { required: true, message: '系列名不能为空' }
         ],
       },
       configPageKeywordInputVisiable: false,
@@ -498,6 +466,9 @@ export default {
       configPageTagAddVisiable: false,
       configPageUserId: undefined,
       myUserList: [],
+      firstTags: [],
+      configPageFirstTagValue: undefined,
+      firstTagSelectLoading: false
     };
   },
   created() {
@@ -538,7 +509,7 @@ export default {
       this.form = {
         seriesId: undefined,
         seriesName: undefined,
-        seriesTag: [],
+        tag: [],
         abstract: undefined,
         createTime: undefined,
         userId: undefined,
@@ -548,6 +519,7 @@ export default {
         collect: undefined
       };
       this.resetForm("form");
+
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -563,8 +535,12 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-      this.config_open = true;
-      this.title = "添加系列";
+      getTag({}).then((res) => {
+        this.firstTags = res.data;
+        this.config_open = true;
+        this.title = "添加系列";
+
+      })
 
     },
     // 多选框选中数据
@@ -576,13 +552,17 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      console.log('seriesId: '+row.seriesId)
-      getSeriesBrief({ seriesId: row.seriesId}).then((res) => {
+      console.log('seriesId: ' + row.seriesId)
+      getSeriesBrief({ seriesId: row.seriesId }).then((res) => {
         console.log('成功获取到单个series数据')
         console.log(res.data[0])
         this.form = res.data[0];
-        this.config_open = true;
-        this.title = "修改系列"
+
+        getTag({}).then((res) => {
+          this.firstTags = res.data;
+          this.config_open = true;
+          this.title = "修改系列"
+        })
       })
     },
 
@@ -640,7 +620,7 @@ export default {
         .confirm('是否确认删除ID为"' + seriesIdList.toString() + '"的数据项？')
         .then(() => {
 
-          delSeries({seriesIdList: seriesIdList}).then(() => {
+          delSeries({ seriesIdList: seriesIdList }).then(() => {
             this.$modal.msgSuccess("删除成功");
             this.getList();
           }).catch(() => {
@@ -695,48 +675,65 @@ export default {
     },
     //添加标签
     handlerConfigPageTagAdd() {
-      if (this.configPageThirdTagValue) {
-        if (
-          this.configPageFirstTagValue == "" ||
-          this.configPageSecondTagValue == ""
-        ) {
-          this.$modal.msgError("请确保一级二级标签不为空！");
+      // if (this.configPageThirdTagValue) {
+      //   if (
+      //     this.configPageFirstTagValue == "" ||
+      //     this.configPageSecondTagValue == ""
+      //   ) {
+      //     this.$modal.msgError("请确保一级二级标签不为空！");
+      //   } else {
+      //     getTag({ tagName: this.configPageThirdTagValue }).then((res) => {
+      //       let tag = res.data[0];
+      //       this.form.postTag.push(tag);
+      //     });
+      //   }
+      // } else if (this.configPageSecondTagValue) {
+      //   if (this.configPageFirstTagValue == "") {
+      //     this.$modal.msgError("请确保一级标签不为空！");
+      //   } else {
+      //     getTag({ tagName: this.configPageSecondTagValue }).then((res) => {
+      //       let tag = res.data[0];
+      //       this.form.postTag.push(tag);
+      //     });
+      //   }
+      // } else if (this.configPageFirstTagValue) {
+      //   getTag({ tagName: this.configPageFirstTagValue }).then((res) => {
+      //     let tag = res.data[0];
+      //     this.form.postTag.push(tag);
+      //   });
+      // }
+      // this.configPageTagAddVisiable = false;
+
+      if (this.configPageFirstTagValue) {
+        const tagId = this.configPageFirstTagValue;
+        // console.log('tagId = '+tagId);
+        // console.log(this.firstTags)
+        // console.log(this.firstTags.find(item => item.tagId === tagId));
+        if (this.form.tag.find(item => item.tagId === tagId)) {
+          this.$modal.msgError("请勿重复添加标签！");
         } else {
-          getTag({ tagName: this.configPageThirdTagValue }).then((res) => {
-            let tag = res.data[0];
-            this.form.postTag.push(tag);
-          });
+          getTag({ tagId: tagId }).then((res) => {
+            this.form.tag.push(res.data[0]);
+            this.configPageTagAddVisiable = false;
+          })
         }
-      } else if (this.configPageSecondTagValue) {
-        if (this.configPageFirstTagValue == "") {
-          this.$modal.msgError("请确保一级标签不为空！");
-        } else {
-          getTag({ tagName: this.configPageSecondTagValue }).then((res) => {
-            let tag = res.data[0];
-            this.form.postTag.push(tag);
-          });
-        }
-      } else if (this.configPageFirstTagValue) {
-        getTag({ tagName: this.configPageFirstTagValue }).then((res) => {
-          let tag = res.data[0];
-          this.form.postTag.push(tag);
-        });
       }
-      this.configPageTagAddVisiable = false;
+
     },
     //删除标签
     handleConfigPageTagClose(tag) {
-      this.form.postTag.splice(this.form.postTag.indexOf(tag), 1);
+      this.form.tag.splice(this.form.tag.indexOf(tag), 1);
     },
     //显示添加标签选项
     showConfigPageTagAdd() {
+      this.configPageFirstTagValue = undefined;
       this.configPageTagAddVisiable = true;
     },
     unshowConfigPageTagAdd() {
       this.configPageTagAddVisiable = false;
       this.configPageFirstTagValue = "";
-      this.configPageSecondTagValue = "";
-      this.configPageThirdTagValue = "";
+      // this.configPageSecondTagValue = "";
+      // this.configPageThirdTagValue = "";
     },
     //处理tagAdd选择改变
     handleTagAddSelectChanged() {
